@@ -1,13 +1,13 @@
-import { createProgram, createShader, fragmentShaderSource, vertexShaderSource, } from "./shader.js";
-import { resizeCanvasToDisplaySize } from "./utils.js";
+import shaderLoader from "./engine/shader_loader.js";
+import { fragmentShaderSource } from "./shader/fragment.js";
+import { vertexShaderSource } from "./shader/vertex.js";
+import { resizeCanvasToDisplaySize } from "./engine/utils.js";
 const canvas = document.querySelector("#c");
 const gl = canvas.getContext("webgl2");
 function main() {
     console.log("s");
     if (gl) {
-        var vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
-        var fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
-        const program = createProgram(gl, vertexShader, fragmentShader);
+        const program = shaderLoader(gl, vertexShaderSource, fragmentShaderSource);
         const positionAttributeLocation = gl.getAttribLocation(program, "a_position");
         const positionBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
