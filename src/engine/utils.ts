@@ -1,3 +1,5 @@
+import { vec2 } from "../external/glmatrix/index";
+
 export function resizeCanvasToDisplaySize(
   canvas: HTMLCanvasElement,
   multiplier = 1
@@ -15,3 +17,5 @@ export function resizeCanvasToDisplaySize(
 export function toDegrees(radians: number) {
   return radians * (180 / Math.PI);
 }
+
+export const ZERO = vec2.fromValues(0, 1);

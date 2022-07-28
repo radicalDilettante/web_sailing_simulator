@@ -1,14 +1,13 @@
-import Mesh from "../engine/mesh";
-import { toDegrees } from "../engine/utils";
-import * as vec2 from "../external/glmatrix/vec2";
-import * as vec3 from "../external/glmatrix/vec3";
-import * as mat4 from "../external/glmatrix/mat4";
+import Mesh from "../engine/mesh.js";
+import { toDegrees, ZERO } from "../engine/utils.js";
+import * as vec2 from "../external/glmatrix/vec2.js";
+import * as vec3 from "../external/glmatrix/vec3.js";
+import * as mat4 from "../external/glmatrix/mat4.js";
 const MAX_SPEED = 10;
 const CIRCLE_RADIUS = 1;
-const ZERO = vec2.fromValues(0, 1);
 export default class Yacht extends Mesh {
-    constructor() {
-        super(...arguments);
+    constructor(gl) {
+        super(gl);
         this._indices = [0, 1, 2, 2, 3, 4, 0, 2, 4];
         this._vertices = [
             -1.0, 0.0, 0.2, 1.0, 0.0, 0.2, 1.0, 2.0, 0.2, 0.0, 4.0, 0.2, -1.0, 2.0, 0.2,
