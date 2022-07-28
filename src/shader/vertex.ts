@@ -1,9 +1,14 @@
 export const vertexShaderSource: string = `#version 300 es
  
-in vec4 a_position;
+layout(location = 0) in vec3 pos;
+layout(location = 1) in vec3 color;
  
+out vec3 fragmentColor;
+
 void main() {
  
-  gl_Position = a_position;
+  gl_Position = vec4(pos,1.0);
+  fragmentColor = color;
+
 }
 `;

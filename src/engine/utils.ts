@@ -11,3 +11,7 @@ export function resizeCanvasToDisplaySize(
   }
   return false;
 }
+
+export function toDegrees(radians: number) {
+  return radians * (180 / Math.PI);
+}
