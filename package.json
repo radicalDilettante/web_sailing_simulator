@@ -1,0 +1,17 @@
+{
+  "name": "web_sailing_simulator",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc-watch"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "typescript": "^4.7.4"
+  },
+  "devDependencies": {
+    "tsc-watch": "^5.0.3"
+  }
+}
