@@ -1,4 +1,4 @@
-import Mesh from "../engine/mesh";
+import Mesh from "../engine/mesh.js";
 export default class Goal extends Mesh {
     constructor(gl) {
         super(gl);

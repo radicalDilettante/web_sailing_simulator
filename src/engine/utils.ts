@@ -1,4 +1,4 @@
-import { vec2 } from "../external/glmatrix/index";
+import { vec2 } from "../external/glmatrix/index.js";
 
 export function resizeCanvasToDisplaySize(
   canvas: HTMLCanvasElement,

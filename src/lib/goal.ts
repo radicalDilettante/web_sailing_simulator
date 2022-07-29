@@ -1,4 +1,4 @@
-import Mesh from "../engine/mesh";
+import Mesh from "../engine/mesh.js";
 
 export default class Goal extends Mesh {
   private _indices = [0, 1, 2, 0, 2, 3, 4, 5, 6, 4, 6, 7];

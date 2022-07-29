@@ -1,6 +1,6 @@
-import Mesh from "../engine/mesh";
-import { toRadian } from "../external/glmatrix/common";
-import { mat4, vec3 } from "../external/glmatrix/index";
+import Mesh from "../engine/mesh.js";
+import { toRadian } from "../external/glmatrix/common.js";
+import { mat4, vec3 } from "../external/glmatrix/index.js";
 export default class Mast extends Mesh {
     constructor(gl) {
         super(gl);

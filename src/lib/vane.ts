@@ -1,6 +1,6 @@
-import Mesh from "../engine/mesh";
-import { ZERO } from "../engine/utils";
-import { mat4, vec2, vec3 } from "../external/glmatrix/index";
+import Mesh from "../engine/mesh.js";
+import { ZERO } from "../engine/utils.js";
+import { mat4, vec2, vec3 } from "../external/glmatrix/index.js";
 
 export default class Vane extends Mesh {
   private _indices = [0, 1, 2, 0, 2, 6, 4, 5, 3];

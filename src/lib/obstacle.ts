@@ -1,4 +1,4 @@
-import Mesh from "../engine/mesh";
+import Mesh from "../engine/mesh.js";
 
 export default class Obstacle extends Mesh {
   private _indices = [0, 1, 2, 0, 2, 3];
