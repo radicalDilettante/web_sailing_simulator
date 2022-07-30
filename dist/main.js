@@ -111,8 +111,8 @@ function setObstacles() {
         vec2.copy(aabb.center, center);
         vec2.copy(aabb.length, length);
         obstacle.createObstacle(center, length);
-        obstacleList.push(obstacle);
-        obstacleAABBList.push(aabb);
+        obstacleList[i] = obstacle;
+        obstacleAABBList[i] = aabb;
     }
 }
 function setGoal(center) {

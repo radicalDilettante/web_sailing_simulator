@@ -20,7 +20,6 @@ export default class Mast extends Mesh {
     super.createMesh(this._indices, this._vertices, this._colors);
   }
   public getModelMatrix(angle: number) {
-    console.log(toDegrees(angle));
     const windAngle = toDegrees(angle);
     let mastAngle: number;
 

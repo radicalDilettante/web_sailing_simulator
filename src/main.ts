@@ -149,8 +149,8 @@ function setObstacles() {
 
     obstacle.createObstacle(center, length);
 
-    obstacleList.push(obstacle);
-    obstacleAABBList.push(aabb);
+    obstacleList[i] = obstacle;
+    obstacleAABBList[i] = aabb;
   }
 }
 function setGoal(center: vec2) {
@@ -191,8 +191,8 @@ function reset() {
   worldWind = toRadian(Math.random() * 360); // rand 0~360
 
   yacht.reset(pointList[start], startDirAngle[start]);
-
   setObstacles();
+
   let finish = 0;
   switch (start) {
     case 0:
