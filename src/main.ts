@@ -70,6 +70,7 @@ function main() {
     if (keyName === "ArrowUp") yacht.turnEngine(true);
     if (keyName === "ArrowLeft") yacht.turn("port");
     if (keyName === "ArrowRight") yacht.turn("stbd");
+    if (keyName === " ") reset();
   });
   document.addEventListener("keyup", (event) => {
     const keyName = event.key;
