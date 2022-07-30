@@ -35,6 +35,6 @@ export default class Goal extends Mesh {
             center[1] + length[1] / 2 - 1,
             0.1,
         ];
-        super.createMesh(vertices, this._colors, this._indices);
+        super.createMesh(this._indices, vertices, this._colors);
     }
 }

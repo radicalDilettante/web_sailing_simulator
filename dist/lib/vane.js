@@ -1,6 +1,5 @@
 import Mesh from "../engine/mesh.js";
-import { ZERO } from "../engine/utils.js";
-import { mat4, vec2, vec3 } from "../external/glmatrix/index.js";
+import { mat4, vec3 } from "../external/glmatrix/index.js";
 export default class Vane extends Mesh {
     constructor(gl) {
         super(gl);
@@ -14,16 +13,13 @@ export default class Vane extends Mesh {
             0.61, 0.5, 0.53, 0.61, 0.5, 0.53, 0.61, 0.5,
         ];
     }
-    createVane(pos, length) {
-        super.createMesh(this._vertices, this._colors, this._indices);
+    createVane() {
+        super.createMesh(this._indices, this._vertices, this._colors);
     }
     getModelMatrix(pos, worldWind) {
-        const normalizedWorldWind = vec2.create();
-        vec2.normalize(normalizedWorldWind, worldWind);
-        const angle = vec2.angle(ZERO, normalizedWorldWind);
         const model = mat4.create();
         mat4.translate(model, model, vec3.fromValues(pos[0], pos[1] + 2, 0));
-        mat4.fromZRotation(model, angle);
+        mat4.rotate(model, model, worldWind, vec3.fromValues(0, 0, 1));
         return model;
     }
 }

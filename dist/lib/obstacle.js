@@ -22,6 +22,6 @@ export default class Obstacle extends Mesh {
             center[1] + length[1] / 2,
             0.1,
         ];
-        super.createMesh(vertices, this._colors, this._indices);
+        super.createMesh(this._indices, vertices, this._colors);
     }
 }

@@ -1,8 +1,8 @@
 import Mesh from "../engine/mesh.js";
-import { toDegrees, ZERO } from "../engine/utils.js";
 import * as vec2 from "../external/glmatrix/vec2.js";
 import * as vec3 from "../external/glmatrix/vec3.js";
 import * as mat4 from "../external/glmatrix/mat4.js";
+import { toRadian } from "../external/glmatrix/common.js";
 const MAX_SPEED = 10;
 const CIRCLE_RADIUS = 1;
 export default class Yacht extends Mesh {
@@ -16,9 +16,9 @@ export default class Yacht extends Mesh {
             0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3,
         ];
         this._curPos = vec2.fromValues(0, 0);
-        this._prevAppWindAngle = 0; //degrees
+        this._curAngle = 0; //radians
+        // private _curDirVec = vec2.fromValues(0, 1);
         this._prevVelocity = vec2.fromValues(0, 0);
-        this._curDirVec = vec2.fromValues(0, 1);
         this._isEngineOn = false;
     }
     createYacht() {
@@ -32,45 +32,51 @@ export default class Yacht extends Mesh {
         vec2.add(velocity, velocity, this.getDrag(deltaTime));
         if (vec2.len(velocity) > MAX_SPEED) {
             const normalizedVelocity = vec2.create();
-            vec2.normalize(normalizedVelocity, normalizedVelocity);
+            vec2.normalize(normalizedVelocity, velocity);
             vec2.scale(velocity, normalizedVelocity, MAX_SPEED);
         }
         const x = this._curPos[0] + velocity[0] * deltaTime;
         const y = this._curPos[1] + velocity[1] * deltaTime;
         const model = mat4.create();
         mat4.translate(model, model, vec3.fromValues(x, y, 0));
-        mat4.fromZRotation(model, this.getCurDir());
-        this._prevVelocity = velocity;
+        mat4.rotate(model, model, this._curAngle, vec3.fromValues(0, 0, 1));
+        vec2.copy(this._prevVelocity, velocity);
         vec2.set(this._curPos, x, y);
         return model;
     }
     reset(pos, dirAngle) {
-        this._curPos = pos;
-        this._prevAppWindAngle = 0;
-        vec2.set(this._prevVelocity, 0, 0);
-        vec2.set(this._curDirVec, 0, 1);
-        vec2.rotate(this._curDirVec, this._curDirVec, vec2.create(), dirAngle);
+        vec2.copy(this._curPos, pos);
+        vec2.zero(this._prevVelocity);
+        this._curAngle = dirAngle;
     }
     turn(dir) {
-        let angle;
         switch (dir) {
             case "port":
-                angle = 0.01;
+                if (this._curAngle + 0.05 <= 2 * Math.PI)
+                    this._curAngle += 0.05;
+                else
+                    this._curAngle = 0;
                 break;
             case "stbd":
-                angle = -0.01;
+                if (this._curAngle - 0.05 >= 0)
+                    this._curAngle -= 0.05;
+                else
+                    this._curAngle = 2 * Math.PI;
                 break;
         }
-        vec2.rotate(this._curDirVec, this._curDirVec, vec2.create(), angle);
     }
     turnEngine(isOn) {
         this._isEngineOn = isOn;
     }
-    getMastAngle(worldWind) {
-        const normalizedWorldWind = vec2.create();
-        vec2.normalize(normalizedWorldWind, worldWind);
-        const angle = vec2.angle(normalizedWorldWind, this._curDirVec);
-        return toDegrees(angle);
+    getAppWindAngle(worldWind) {
+        const zero = vec2.fromValues(0, 1);
+        const worldWindVec = vec2.create();
+        const boatVec = vec2.create();
+        const angle = vec2.angle(vec2.rotate(worldWindVec, zero, vec2.create(), worldWind), vec2.rotate(boatVec, zero, vec2.create(), this._curAngle));
+        // console.log(`worldWInd : ${toDegrees(worldWind)}`);
+        // console.log(`_curAngle : ${toDegrees(this._curAngle)}`);
+        // console.log(`appwind : ${toDegrees(angle)}`);
+        return angle;
     }
     testCollision(boxCenter, boxLength) {
         // Detect collision between obstacles(AABB) and yacht(Circle)
@@ -88,7 +94,8 @@ export default class Yacht extends Mesh {
             boxPoint[1] = boxCenter[1] + boxLength[1] / 2;
         else
             boxPoint[1] = circlePos[1];
-        const dist = vec2.fromValues(circlePos[0] - boxPoint[0], circlePos[1] - circlePos[1]);
+        const dist = vec2.create();
+        vec2.add(dist, circlePos, vec2.scale(boxPoint, boxPoint, -1));
         if (vec2.len(dist) >= CIRCLE_RADIUS)
             return false;
         else
@@ -96,13 +103,13 @@ export default class Yacht extends Mesh {
     }
     testCollisionWithWall() {
         const circlePos = vec2.fromValues(this._curPos[0], this._curPos[1] + 2);
-        if (circlePos[0] - CIRCLE_RADIUS <= -80)
+        if (circlePos[0] - CIRCLE_RADIUS <= -70)
             return true;
-        if (circlePos[0] + CIRCLE_RADIUS >= 80)
+        if (circlePos[0] + CIRCLE_RADIUS >= 70)
             return true;
-        if (circlePos[1] - CIRCLE_RADIUS <= -60)
+        if (circlePos[1] - CIRCLE_RADIUS <= -50)
             return true;
-        if (circlePos[1] + CIRCLE_RADIUS >= 60)
+        if (circlePos[1] + CIRCLE_RADIUS >= 50)
             return true;
         return false;
     }
@@ -115,7 +122,7 @@ export default class Yacht extends Mesh {
     getDrag(deltaTime) {
         const drag = vec2.create();
         if (vec2.len(this._prevVelocity) > 0)
-            vec2.scale(drag, this._prevVelocity, 0.2 * deltaTime);
+            vec2.scale(drag, this._prevVelocity, deltaTime);
         else
             vec2.set(drag, 0, 0);
         vec2.scale(drag, drag, -1);
@@ -124,9 +131,9 @@ export default class Yacht extends Mesh {
     getPoweredPropulsion(deltaTime) {
         const propulsion = vec2.create();
         if (this._isEngineOn) {
-            const engineSpeed = 0.5 * deltaTime;
+            const engineSpeed = 2 * deltaTime;
             vec2.set(propulsion, 0, engineSpeed);
-            vec2.rotate(propulsion, propulsion, vec2.create(), this.getCurDir());
+            vec2.rotate(propulsion, propulsion, vec2.create(), this._curAngle);
         }
         else {
             vec2.set(propulsion, 0, 0);
@@ -134,28 +141,20 @@ export default class Yacht extends Mesh {
         return propulsion;
     }
     getWindPropulsion(worldWind, deltaTime) {
-        const appWind = vec2.create();
-        vec2.add(appWind, worldWind, this._prevVelocity);
-        const normalizedAppWind = vec2.create();
-        vec2.normalize(normalizedAppWind, appWind);
-        const appWindAngle = toDegrees(vec2.angle(normalizedAppWind, this._curDirVec));
+        const appWindAngle = this.getAppWindAngle(worldWind);
         const propulsion = vec2.create();
-        if (appWindAngle >= -40 && appWindAngle <= 40)
+        if (appWindAngle >= toRadian(-40) && appWindAngle <= toRadian(40))
+            vec2.set(propulsion, 0, 6);
+        else if (appWindAngle >= toRadian(-90) && appWindAngle <= toRadian(90))
             vec2.set(propulsion, 0, 5);
-        else if (appWindAngle >= -90 && appWindAngle <= 90)
+        else if (appWindAngle >= toRadian(-130) && appWindAngle <= toRadian(130))
+            vec2.set(propulsion, 0, 4);
+        else if (appWindAngle >= toRadian(-150) && appWindAngle <= toRadian(150))
             vec2.set(propulsion, 0, 3);
-        else if (appWindAngle >= -130 && appWindAngle <= 130)
-            vec2.set(propulsion, 0, 2);
-        else if (appWindAngle >= -150 && appWindAngle <= 150)
-            vec2.set(propulsion, 0, 1);
         else
             vec2.set(propulsion, 0, 0);
-        this._prevAppWindAngle = appWindAngle;
-        vec2.rotate(propulsion, propulsion, vec2.create(), this.getCurDir());
+        vec2.rotate(propulsion, propulsion, vec2.create(), this._curAngle);
         vec2.scale(propulsion, propulsion, deltaTime);
         return propulsion;
-    }
-    getCurDir() {
-        return vec2.angle(ZERO, this._curDirVec);
     }
 }

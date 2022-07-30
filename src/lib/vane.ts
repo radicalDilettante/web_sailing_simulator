@@ -19,18 +19,14 @@ export default class Vane extends Mesh {
     super(gl);
   }
 
-  public createVane(pos: vec2, length: vec2) {
-    super.createMesh(this._vertices, this._colors, this._indices);
+  public createVane() {
+    super.createMesh(this._indices, this._vertices, this._colors);
   }
 
-  public getModelMatrix(pos: vec2, worldWind: vec2) {
-    const normalizedWorldWind = vec2.create();
-    vec2.normalize(normalizedWorldWind, worldWind);
-    const angle = vec2.angle(ZERO, normalizedWorldWind);
-
+  public getModelMatrix(pos: vec2, worldWind: number) {
     const model = mat4.create();
     mat4.translate(model, model, vec3.fromValues(pos[0], pos[1] + 2, 0));
-    mat4.fromZRotation(model, angle);
+    mat4.rotate(model, model, worldWind, vec3.fromValues(0, 0, 1));
 
     return model;
   }
