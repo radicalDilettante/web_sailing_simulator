@@ -8,8 +8,26 @@ body {
 #container {
   width: 80%;
   margin: auto;
+  position: relative;
 }
 
 #c {
   width: 100%;
+}
+
+button {
+  position: absolute;
+  width: 30%;
+  height: 50px;
+  border: none;
+  background-color: rgba(0.1, 0.1, 0.1, 0.1);
+}
+
+#left {
+  left: 20px;
+  bottom: 20px;
+}
+#right {
+  right: 20px;
+  bottom: 20px;
 }

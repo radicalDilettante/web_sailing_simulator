@@ -31,6 +31,8 @@ const goalAABB = { center: vec2.create(), length: vec2.create() };
 let deltaTime = 0;
 let lastTime = 0;
 let worldWind = 0;
+const leftButton = document.querySelector("#left");
+const rightButton = document.querySelector("#right");
 const canvas = document.querySelector("#c");
 const gl = canvas.getContext("webgl2");
 if (!gl)
@@ -62,6 +64,18 @@ function main() {
         const keyName = event.key;
         if (keyName === "ArrowUp")
             yacht.turnEngine(false);
+    });
+    leftButton.addEventListener("click", (e) => {
+        e.preventDefault();
+        yacht.turn("port");
+        yacht.turn("port");
+        yacht.turn("port");
+    });
+    rightButton.addEventListener("click", (e) => {
+        e.preventDefault();
+        yacht.turn("stbd");
+        yacht.turn("stbd");
+        yacht.turn("stbd");
     });
     animate(lastTime);
 }

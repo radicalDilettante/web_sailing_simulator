@@ -41,6 +41,9 @@ let deltaTime = 0;
 let lastTime = 0;
 let worldWind = 0;
 
+const leftButton: HTMLButtonElement = document.querySelector("#left")!;
+const rightButton: HTMLButtonElement = document.querySelector("#right")!;
+
 const canvas: HTMLCanvasElement = document.querySelector("#c")!;
 const gl = canvas.getContext("webgl2")!;
 if (!gl) alert("Cannot use webgl2");
@@ -72,6 +75,18 @@ function main() {
     const keyName = event.key;
 
     if (keyName === "ArrowUp") yacht.turnEngine(false);
+  });
+  leftButton.addEventListener("click", (e) => {
+    e.preventDefault();
+    yacht.turn("port");
+    yacht.turn("port");
+    yacht.turn("port");
+  });
+  rightButton.addEventListener("click", (e) => {
+    e.preventDefault();
+    yacht.turn("stbd");
+    yacht.turn("stbd");
+    yacht.turn("stbd");
   });
 
   animate(lastTime);
